@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+    <title>Poverty Around the World</title>
+    <link rel="stylesheet" href="main.css">
+    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        
+    
+        google.load('visualization', '1.0', {
+            'packages': ['controls']
+        });
+        google.setOnLoadCallback(queryData);
+
+
+        function queryData() {
+
+            var query = new google.visualization.Query(
+                'https://docs.google.com/spreadsheets/d/1yJTL-CqpJBX9PV86JKHOM2lEnuBUslxxWS4Z3ArThtw/edit#gid=1576200111/gviz/tq?tq=');
+            query.send(handleQueryResponse);
+        }
+
+
+        function handleQueryResponse(response) {
+            if (response.isError()) {
+                alert('Error in query: ' + response.getMessage() + ' ' +
+                    response.getDetailedMessage());
+                return;
+            }
+
+
+            var dataTable = response.getDataTable();
+
+            // Create table chart
+            var tableChart = new google.visualization.ChartWrapper({
+                'chartType': 'Table',
+                'containerId': 'tableChart',
+
+                // 'view': { 'columns': [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 19, 20, 21] }
+            });
+
+            // Don't draw the chart now. The chart will be drawn when the dashboard is drawn. 
+
+            // Create Pie chart
+            var PieChart = new google.visualization.ChartWrapper({
+                'chartType': 'PieChart',
+                'containerId': 'Pie_chart_div',
+                'view': {
+                    'columns': [8,9]
+                },
+
+                'options': {
+                    'title': 'GDP Per Region',
+                    'width': 400,
+                    'height': 300
+                }
+            });
+            //Create Bubble Graph
+            var BubbleChart = new google.visualization.ChartWrapper({
+                'chartType': 'BubbleChart',
+                'containerId': 'Bubble_Chart_div',
+                 'view': 
+                {
+                    'columns': [8, 2,5,6]
+                },
+                'options': 
+                {
+                
+                    hAxis: 
+                    {
+                        title: 'Infant deaths per 1,000 of population under 1 year old'
+                    },
+                    vAxis: 
+                {
+                        format: 'Gross National Product per capita in U.S. dollars'
+                    },
+                    
+                    title: 'Correlation between Infant deaths per 1,000 of population under 1 year old' +
+               ' and Gross National Product per capita in U.S. dollars'
+                },
+                
+                    bubble: {
+                        textStyle: {fontSize: 11}// Put the title of the chart here. 
+                }
+            });
+            // Create SteppedAreaChartchart
+            var SteppedAreaChart = new google.visualization.ChartWrapper({
+                'chartType': 'SteppedAreaChart',
+                'containerId': 'SteppedArea_chart_div',
+                'view': {
+                    'columns': [0, 1, 2, 5]
+                },
+                'options': {
+                    hAxis: {
+                        title: 'Live birth rate per 1,000 of population, Death rate per 1,000 of population, Infant deaths per 1,000 of population under 1 year old'
+                    },
+                    vAxis: {
+                        format: 'Gross National Product per capita in U.S. dollars'
+                    },
+                    'title': 'SteppedArea Chart' // Put the title of the chart here. 
+                }
+            });
+
+            // Create controls
+            var NumGFilter = new google.visualization.ControlWrapper({
+                'width': 1600,
+                'height': 1200,
+                'controlType': 'NumberRangeFilter',
+                'containerId': 'Gross National Product per capita in U.S. dollars_filter_div',
+                'options': {
+                    'filterColumnLabel': 'Gross National Product per capita in U.S. dollars',
+                    ui: {
+                        'labelStacking': 'vertical',
+                        'label': 'Number of GDP'
+                    }
+                }
+            });
+
+
+            var dofwFilter = new google.visualization.ControlWrapper({
+                'controlType': 'CategoryFilter',
+                'containerId': 'dofw_filter_div',
+                'options': {
+                    'filterColumnLabel': 'Country Group Name',
+                    'ui': {
+                        'labelStacking': 'vertical',
+                        'allowTyping': false,
+                        'allowMultiple': true,
+                    }
+                }
+            });
+
+            // Create a dashboard
+            var dashboard = new google.visualization.Dashboard(document.getElementById('dashboard_div'));
+
+            // Bind controls with charts. These controls and charts are now part of the dashboard. 
+            dashboard.bind([NumGFilter, dofwFilter], [tableChart, PieChart, SteppedAreaChart,BubbleChart]);
+
+            // Draw the dashboard. 
+            dashboard.draw(dataTable);
+        }
+
+    </script>
+</head>
+
+<body>
+    <center>
+        <h1>Poverty Data Visualization</h1>
+    </center>
+    <h6>Table Chart</h6>
+    <div id="dashboard_div">
+        <table>
+        
+            <tr>
+                <div id="Gross National Product per capita in U.S. dollars_filter_div" style="">
+                    </div>
+            </tr>
+        
+        </table>
+        
+        
+         <table>
+        
+            <tr>
+                <div id="tableChart" style="height: 300px; width: 100%; border-style: groove;">
+                    </div>
+            </tr>
+        
+        </table>
+        
+        <table>
+        
+            <tr>
+               <div id="SteppedArea_chart_div" style="height: 300px; width: 900px; border-style: groove;">
+                    </div>
+            </tr>
+        
+        </table>
+        
+        <div id="dofw_filter_div" style=""></div>
+        
+         <table>
+        
+            <tr>
+               <div id="Pie_chart_div" style="height: 300px; width: 900px; border-style: groove;">
+                    </div>
+            </tr>
+        
+        </table>
+         <table>
+        
+            <tr>
+              <div id="Bubble_Chart_div" style="height: 500px; width: 1000px; border-style: groove;">
+                    </div>
+            </tr>
+             </table>        
+               
+    </div>
+</body>
+
+</html>
+
+                    
